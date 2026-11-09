@@ -37,24 +37,6 @@ jobs:
         with: { node-version: 20 }
       - name: Install Tauri CLI
         run: cargo install tauri-cli --version "^2" --locked
-      - name: Generate placeholder icons (replaced by real art before release)
-        shell: bash
-        run: |
-          cd apps/desktop/src-tauri
-          python3 -c "
-          import struct, zlib
-          def png(size):
-              raw = b''.join(b'\x00' + bytes([10,108,255,255]) * size for _ in range(size))
-              def chunk(t, d):
-                  c = t + d; return struct.pack('>I', len(d)) + c + struct.pack('>I', zlib.crc32(c))
-              ihdr = struct.pack('>IIBBBBB', size, size, 8, 6, 0, 0, 0)
-              return b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', ihdr) + chunk(b'IDAT', zlib.compress(raw)) + chunk(b'IEND', b'')
-          import os; os.makedirs('icons', exist_ok=True)
-          open('icons/32x32.png','wb').write(png(32))
-          open('icons/128x128.png','wb').write(png(128))
-          open('icons/128x128@2x.png','wb').write(png(256))
-          open('icons/icon.png','wb').write(png(512))
-          "
       - name: Build app
         working-directory: apps/desktop/src-tauri
         run: cargo tauri build
