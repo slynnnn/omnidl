@@ -1,0 +1,101 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --workspace
+      - run: cargo build --release -p omnidl-cli
+
+  desktop:
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, label: windows }
+          - { os: macos-latest, label: macos-universal }
+          - { os: ubuntu-latest, label: linux }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Linux Tauri prerequisites
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2" --locked
+      - name: Generate placeholder icons (replaced by real art before release)
+        shell: bash
+        run: |
+          cd apps/desktop/src-tauri
+          python3 -c "
+          import struct, zlib
+          def png(size):
+              raw = b''.join(b'\x00' + bytes([10,108,255,255]) * size for _ in range(size))
+              def chunk(t, d):
+                  c = t + d; return struct.pack('>I', len(d)) + c + struct.pack('>I', zlib.crc32(c))
+              ihdr = struct.pack('>IIBBBBB', size, size, 8, 6, 0, 0, 0)
+              return b'\x89PNG\r\n\x1a\n' + chunk(b'IHDR', ihdr) + chunk(b'IDAT', zlib.compress(raw)) + chunk(b'IEND', b'')
+          import os; os.makedirs('icons', exist_ok=True)
+          open('icons/32x32.png','wb').write(png(32))
+          open('icons/128x128.png','wb').write(png(128))
+          open('icons/128x128@2x.png','wb').write(png(256))
+          open('icons/icon.png','wb').write(png(512))
+          "
+      - name: Build app
+        working-directory: apps/desktop/src-tauri
+        run: cargo tauri build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: omnidl-${{ matrix.label }}
+          path: |
+            target/release/bundle/**
+            apps/desktop/src-tauri/../../target/release/bundle/**
+          if-no-files-found: warn
+
+  android:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2" --locked
+      - name: Init + build Android
+        working-directory: apps/desktop
+        run: |
+          cargo tauri android init || true
+          cargo tauri android build --apk || echo "Android build needs NDK/signing config — see apps/mobile/README.md"
+
+  ios:
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios
+      - name: Install Tauri CLI
+        run: cargo install tauri-cli --version "^2" --locked
+      - name: Init + build iOS (unsigned)
+        working-directory: apps/desktop
+        run: |
+          cargo tauri ios init || true
+          cargo tauri ios build || echo "iOS build needs signing config — see apps/mobile/README.md"
