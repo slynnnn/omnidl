@@ -1,0 +1,83 @@
+/* OmniDL design system — minimal, calm, generous whitespace.
+   One accent colour, system fonts, no gradients on surfaces,
+   12px radii, hairline separators. Follows system light/dark. */
+:root{
+  --bg:#f7f7f5; --surface:#ffffff; --ink:#17181c; --ink2:#6b6f76;
+  --line:#e7e7e2; --accent:#0a6cff; --accent-ink:#ffffff;
+  --ok:#1d9e62; --warn:#e08a00; --err:#d64545;
+  --radius:12px; --pad:20px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#101114; --surface:#1a1b1f; --ink:#f0f0ee; --ink2:#9a9ea6; --line:#2a2b30; }
+}
+:root[data-theme="dark"]{ --bg:#101114; --surface:#1a1b1f; --ink:#f0f0ee; --ink2:#9a9ea6; --line:#2a2b30; }
+:root[data-theme="light"]{ --bg:#f7f7f5; --surface:#ffffff; --ink:#17181c; --ink2:#6b6f76; --line:#e7e7e2; }
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font:15px/1.5 -apple-system,"Segoe UI",system-ui,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink)}
+#app{display:flex;height:100vh}
+
+/* sidebar (desktop) */
+#sidebar{width:228px;flex:0 0 228px;background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 6px}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:17px}
+.brand-name{font-size:18px;font-weight:650;letter-spacing:.2px}
+#cats{display:flex;flex-direction:column;gap:2px}
+#cats a{padding:7px 10px;border-radius:8px;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;text-decoration:none}
+#cats a:hover{background:var(--bg)}
+#cats a.active{background:var(--bg);font-weight:600}
+#cats hr{border:none;border-top:1px solid var(--line);margin:8px 4px}
+.count{color:var(--ink2);font-size:12px}
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+.global-speed{display:flex;flex-direction:column}
+.global-speed span{font-size:20px;font-weight:650}
+.global-speed small,.hint{color:var(--ink2)}
+.limit-row{display:flex;justify-content:space-between;align-items:center;color:var(--ink2)}
+
+main{flex:1;display:flex;flex-direction:column;min-width:0}
+header{padding:18px var(--pad) 10px;display:flex;flex-direction:column;gap:10px}
+.addbar{display:flex;gap:10px}
+.addbar input{flex:1;padding:12px 14px;font-size:15px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);color:var(--ink)}
+.toolbar{display:flex;gap:12px;align-items:center}
+.toolbar input{padding:8px 12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);width:240px}
+.btn-primary{background:var(--accent);color:var(--accent-ink);border:none;border-radius:var(--radius);padding:11px 18px;font-size:15px;font-weight:600;cursor:pointer}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:7px 12px;cursor:pointer}
+
+#list{overflow-y:auto;padding:6px var(--pad) 24px;display:flex;flex-direction:column;gap:10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.card .row1{display:flex;gap:12px;align-items:baseline}
+.card .name{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.card .badge{font-size:12px;color:var(--ink2);border:1px solid var(--line);padding:1px 8px;border-radius:99px;white-space:nowrap}
+.card .meta{color:var(--ink2);font-size:13px;display:flex;gap:14px;flex-wrap:wrap}
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
+.segments{display:flex;gap:2px;height:10px}
+.segments b{flex:1;background:var(--line);border-radius:2px;position:relative;overflow:hidden}
+.segments b i{position:absolute;inset:0;background:var(--accent);transform-origin:left}
+.card .actions{display:flex;gap:8px}
+.card .actions button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;padding:5px 12px;cursor:pointer}
+.done .progress i{background:var(--ok)}
+.error .name{color:var(--err)}
+#empty{text-align:center;color:var(--ink2);padding:48px 0}
+
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);width:min(520px,92vw);padding:22px}
+dialog::backdrop{background:rgba(0,0,0,.35)}
+dialog label{display:flex;flex-direction:column;gap:5px;margin:10px 0;color:var(--ink2);font-size:13px}
+dialog input,dialog select{padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink);font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.check{flex-direction:row!important;align-items:center;gap:8px}
+menu{display:flex;justify-content:flex-end;gap:10px;padding:0;margin:16px 0 0}
+#tabbar{display:none}
+
+/* mobile: bottom tab bar, single column, big touch targets */
+@media (max-width:760px){
+  #sidebar{display:none}
+  #tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:6px 0 calc(6px + env(safe-area-inset-bottom))}
+  #tabbar a{flex:1;text-align:center;color:var(--ink2);display:flex;flex-direction:column;font-size:17px;text-decoration:none}
+  #tabbar a small{font-size:11px}
+  #tabbar a.active{color:var(--accent)}
+  main{padding-bottom:64px}
+  .toolbar input{flex:1;width:auto}
+  .grid2{grid-template-columns:1fr}
+}

@@ -1,0 +1,14 @@
+[package]
+name = "omnidl-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "OmniDL command-line tool. Accepts IDM-style switches (/d /p /f /n /q /s /m) so existing scripts keep working."
+
+[[bin]]
+name = "omnidl"
+path = "src/main.rs"
+
+[dependencies]
+omnidl-core = { path = "../omnidl-core" }
+omnidl-engine = { path = "../omnidl-engine" }

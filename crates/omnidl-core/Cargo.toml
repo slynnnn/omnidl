@@ -1,0 +1,8 @@
+[package]
+name = "omnidl-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "OmniDL core: source routing, dynamic segmentation, resume state, speed limiting, categorisation. Pure std, no external dependencies."
+
+[dependencies]

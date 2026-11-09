@@ -1,0 +1,9 @@
+[package]
+name = "omnidl-engine"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "OmniDL engine: HTTP segmentation driver, HLS parsing, and sidecar orchestration for yt-dlp / gallery-dl / ffmpeg / torrent."
+
+[dependencies]
+omnidl-core = { path = "../omnidl-core" }

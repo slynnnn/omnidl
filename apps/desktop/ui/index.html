@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OmniDL — Every download, at full speed</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><span class="brand-mark">↓</span><span class="brand-name">OmniDL</span></div>
+    <button id="btn-new" class="btn-primary">＋ 新建下载</button>
+    <nav id="cats">
+      <a data-cat="all" class="active">全部 <span class="count" id="c-all"></span></a>
+      <a data-cat="active">下载中 <span class="count" id="c-active"></span></a>
+      <a data-cat="done">已完成 <span class="count" id="c-done"></span></a>
+      <hr>
+      <a data-cat="Video">视频</a>
+      <a data-cat="Music">音乐</a>
+      <a data-cat="Images">图片</a>
+      <a data-cat="Documents">文档</a>
+      <a data-cat="Compressed">压缩包</a>
+      <a data-cat="Programs">程序</a>
+      <a data-cat="Torrents">种子</a>
+    </nav>
+    <div class="side-foot">
+      <div class="global-speed"><span id="global-speed">0 KB/s</span><small>总速度</small></div>
+      <label class="limit-row">限速
+        <select id="global-limit">
+          <option value="0">不限</option><option value="1024">1 MB/s</option>
+          <option value="5120">5 MB/s</option><option value="10240">10 MB/s</option>
+          <option value="51200">50 MB/s</option>
+        </select>
+      </label>
+      <button id="btn-theme" class="btn-ghost">🌗 主题</button>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <div class="addbar">
+        <input id="url-input" type="text" placeholder="粘贴任何链接 — 直链 / 视频页 / 磁力 / 种子 / m3u8 / 网盘…（回车添加）" autocomplete="off" spellcheck="false">
+        <button id="btn-add" class="btn-primary">添加</button>
+      </div>
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="搜索下载…  (Ctrl K)">
+        <span id="route-hint" class="hint"></span>
+      </div>
+    </header>
+    <section id="list" aria-live="polite"></section>
+    <p id="empty" hidden>还没有下载。粘贴一个链接，或把文件拖进来。</p>
+  </main>
+
+  <nav id="tabbar">
+    <a class="active">⬇<small>下载</small></a><a>▦<small>分类</small></a><a>⚙<small>设置</small></a>
+  </nav>
+</div>
+
+<dialog id="sheet">
+  <form method="dialog" id="sheet-form">
+    <h3>新建下载</h3>
+    <label>链接<input id="sheet-url" type="text"></label>
+    <p class="route-line">来源：<b id="sheet-route">—</b></p>
+    <div class="grid2">
+      <label>保存到<select id="sheet-cat"><option>自动分类</option><option>Video</option><option>Music</option><option>Documents</option><option>Compressed</option><option>Programs</option><option>Images</option></select></label>
+      <label>清晰度（视频）<select id="sheet-quality"><option>最佳</option><option>2160p</option><option>1080p</option><option>720p</option><option>480p</option><option>仅音频</option></select></label>
+      <label>连接数<input id="sheet-conn" type="number" min="1" max="32" value="8"></label>
+      <label class="check"><input id="sheet-later" type="checkbox"> 稍后下载（加入队列）</label>
+    </div>
+    <menu>
+      <button value="cancel" class="btn-ghost">取消</button>
+      <button id="sheet-start" value="start" class="btn-primary">开始下载</button>
+    </menu>
+  </form>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
